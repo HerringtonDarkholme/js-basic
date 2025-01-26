@@ -7,9 +7,13 @@ fonts:
 
 ---
 
+<img style="margin: auto;height: 100%;" src="https://i.redd.it/0l0eovogweq91.jpg"/>
+
+---
+
 # Incorrect References to `this`
 
-In JavaScript, the value of `this` depends on how a function is called.
+Wow! I hate `this` more!
 
 
 ````md magic-move
@@ -69,12 +73,14 @@ Inside a regular function, `this` often refers to the global object (window in b
 * Use arrow functions (`=>`) when you need to preserve the lexical `this` (the `this` of the enclosing scope).
 * Use `.bind(this)` to explicitly set the context of a function.
 * Capture `this` in a variable (e.g., `const self = this;`) and use that within a callback if you need to use the `function` keyword.
+* Do not use `this`. Prefer functional programming™.
 
 ---
 
 # Variable Scope Confusion
 
-`var`, `let`, and `const` are used to declare variables in JavaScript. However, they have different scoping rules.
+`var` vs `let` vs `const`
+
 
 ````md magic-move
 
@@ -175,7 +181,7 @@ console.log(null === undefined); // Output: false
 
 # Undefined vs Null
 
-JavaScript has two distinct concepts for nothingness: `undefined` and `null`.
+A tale of two _nothings_: It was the best of PL, it was the worst of PL.
 
 
 ````md magic-move
@@ -252,8 +258,7 @@ array.map(x => parseInt(x, 10)); // Correct
 
 # NaN Comparisons
 
-`NaN` is a special value in JavaScript that represents an unrepresentable value.
-
+Did you remember SQL's `NULL`?
 
 ````md magic-move
 ```javascript
@@ -274,8 +279,6 @@ console.log(Number.isNaN(result)); // Output: true
 ```
 ````
 
-Did you remember SQL's `NULL`?
-
 ---
 
 # NaN Comparisons
@@ -294,7 +297,7 @@ Did you remember SQL's `NULL`?
 
 # Incorrect Use of `for...in`
 
-Do you know the difference between `for...in` and `for...of`?
+`for...in` vs. `for...of`
 
 
 ````md magic-move
@@ -347,103 +350,127 @@ The `for...in` loop iterates over all enumerable properties of an object, includ
 
 ---
 
-**8. Using `with` Statement**
+# Using `with` Statement
 
-*   **Explanation:** The `with` statement adds a given object to the scope chain while evaluating a block of code, which can cause confusion and lead to hard-to-debug code.
+`with` statement is BAD. Period.
 
-*   **Negative Example:**
+````md magic-move
 
-    ```javascript
-    const myObject = { value: 10 };
-    with (myObject) {
-      console.log(value); // Output: 10
-    }
-    ```
+```javascript
+const myObject = { value: 10 };
+with (myObject) {
+  console.log(value); // Output: 10
+}
+```
 
-    ```javascript
-    const myObject = { value: 10 };
-    let value = 20;
-    with (myObject) {
-      console.log(value); // Output: 10
-    }
-    console.log(value) // Output: 20
-    ```
+```javascript
+const myObject = { value: 10 };
+let value = 20;
+with (myObject) {
+  console.log(value); // Output: 10
+}
+console.log(value) // Output: 20
+```
 
-*   **Positive Example:**
-
-    ```javascript
-     const myObject = { value: 10 };
-     console.log(myObject.value); // Output: 10
-    ```
-
-*   **Best Practices:**
-    *   Avoid using the `with` statement. It is not recommended in modern JavaScript and considered bad practice.
-    *   Access object properties directly using dot notation `myObject.value`.
+```javascript
+ const myObject = { value: 10 };
+ console.log(myObject.value); // Output: 10
+```
+````
 
 ---
 
-**9. Incorrect Use of `delete` Operator**
+# Using `with` Statement
 
-*   **Explanation:** The `delete` operator removes properties from an object. It does not remove variables or array elements. For array elements, it actually replaces them with undefined, resulting in a sparse array, and keeping the array length.
+**Explanation**
+The `with` statement adds a given object to the scope chain while evaluating a block of code, which can cause confusion and lead to hard-to-debug code.
 
-*   **Negative Example:**
-
-    ```javascript
-    let myVar = 10;
-    delete myVar; // Doesn't delete the variable
-    console.log(myVar); // Output: 10
-    const myArray = [1,2,3]
-    delete myArray[1];
-    console.log(myArray); // Output: [1, empty, 3]
-    console.log(myArray.length); // Output: 3
-    ```
-
-*   **Positive Example:**
-
-    ```javascript
-     let myVar = 10;
-     myVar = undefined;
-    console.log(myVar); // Output: undefined
-
-    const myObject = { a: 1, b: 2 };
-    delete myObject.a;
-    console.log(myObject); // Output: { b: 2 }
-
-     const myArray = [1,2,3]
-      myArray.splice(1,1);
-    console.log(myArray); // Output: [1, 3]
-    console.log(myArray.length); // Output: 2
-    ```
-
-*   **Best Practices:**
-    *   Use `delete` to remove object properties.
-    *   Set variables to `undefined` or reassign them to remove their value.
-    *   Use array methods like `splice()` to remove array elements.
+**Best Practices**
+*   Avoid using the `with` statement. It is not recommended in modern JavaScript and considered bad practice.
+*   Access object properties directly using dot notation `myObject.value`.
 
 ---
 
-**10. Incorrect Use of `typeof` Operator**
+# Incorrect Use of `delete` Operator
 
-*   **Explanation:** The `typeof` operator has some quirks.  It will return "object" for `null` which is incorrect, and the `typeof` an array will also return "object" even though arrays are a special type of object.
+You almost never need `delete`.
 
-*   **Negative Example:**
+````md magic-move
 
-    ```javascript
-    console.log(typeof null);   // Output: 'object' (incorrect)
-    console.log(typeof []);     // Output: 'object' (incorrect for arrays)
-    ```
+```javascript
+let myVar = 10;
+delete myVar; // Doesn't delete the variable
+console.log(myVar); // Output: 10
 
-*   **Positive Example:**
+const myArray = [1,2,3]
+delete myArray[1];
+console.log(myArray); // Output: [1, empty, 3]
+console.log(myArray.length); // Output: 3
+```
 
-    ```javascript
-    console.log(null === null); // Output: true
-    console.log(Array.isArray([])); // Output: true
-    console.log(typeof 'hello') // Output: string
-    console.log(typeof 10) // Output: number
-    console.log(typeof true) // Output: boolean
-    ```
+```javascript
+let myVar = 10;
+myVar = undefined;
+console.log(myVar); // Output: undefined
 
-*   **Best Practices:**
-    *   Use `=== null` to check for null.
-    *   Use `Array.isArray()` to check for arrays
-    *   Use the `typeof` operator for primitive data type checking, such as number, string, boolean, or undefined.
+const myArray = [1,2,3]
+myArray.splice(1,1);
+console.log(myArray); // Output: [1, 3]
+console.log(myArray.length); // Output: 2
+```
+````
+
+---
+
+# Incorrect Use of `delete` Operator
+
+**Explanation**
+
+The `delete` operator removes properties from an object. It does not remove variables or array elements. For array elements, it actually replaces them with undefined, resulting in a sparse array, and keeping the array length.
+
+**Best Practices**
+*   Use `obj.prop = undefined` or `{...newObj, prop} = obj` to remove object properties.
+*   Set variables to `undefined` or reassign them to remove their value.
+*   Use array methods like `splice()` to remove array elements.
+
+---
+
+# Incorrect Use of `typeof` Operator
+
+`typeof` is weird.
+
+````md magic-move
+
+```javascript
+console.log(typeof null);   // Output: 'object' (incorrect)
+console.log(typeof []);     // Output: 'object' (incorrect for arrays)
+```
+
+```javascript
+console.log(null === null); // Output: true
+console.log(Array.isArray([])); // Output: true
+console.log(typeof 'hello') // Output: string
+console.log(typeof 10) // Output: number
+console.log(typeof true) // Output: boolean
+```
+
+````
+
+---
+
+# Incorrect Use of `typeof` Operator
+
+**Explanation**
+
+The `typeof` operator has some quirks.  It will return "object" for `null` which is incorrect, and the `typeof` an array will also return "object" even though arrays are a special type of object.
+
+**Best Practices**
+*   Use `=== null` to check for null.
+*   Use `Array.isArray()` to check for arrays
+*   Use the `typeof` operator for primitive data type checking, such as number, string, boolean, or undefined.
+
+---
+
+# Thanks
+
+The slides are based mostly on Google Gemini and ChatGPT.
